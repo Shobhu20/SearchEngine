@@ -14,7 +14,7 @@ import org.json.JSONArray;
 
 import WebCrawler.WebCrawlerManager;
 import WebCrawler.WebCrawlerNode;
-import resources.InvertedIndex;
+import implementations.InvertedIndex;
 
 
 @WebServlet("/WebSrcController")
