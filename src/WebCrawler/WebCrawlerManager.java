@@ -129,9 +129,9 @@ public class WebCrawlerManager {
 //		System.out.println("Now will load from file ...........");
 		Collection<WebCrawlerNode> nodesSaved = (Collection<WebCrawlerNode>)WebCrawlerManager.loadSerializedObject("luis", "LinkedList");
 		InvertedIndex obj = new InvertedIndex();
-		obj.updatedloadData(nodesSaved);
+		obj.dataUpdated(nodesSaved);
 		//WebCrawlerManager.saveSerializableObject("luisDictonary", obj);		
-		obj.guessWord("l");
+		obj.predictWord("l");
 //		
    }
    

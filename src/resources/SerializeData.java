@@ -26,7 +26,7 @@ public class SerializeData implements Serializable {
 		FileInputStream fin = new FileInputStream("test1.txt");
 		in = new ObjectInputStream(fin);
 		InvertedIndex obj = (InvertedIndex)in.readObject();
-		System.out.println(obj.guessWord("test"));	
+		System.out.println(obj.predictWord("test"));	
 	}
 	
 
