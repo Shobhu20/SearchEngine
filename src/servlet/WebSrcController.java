@@ -60,11 +60,11 @@ public class WebSrcController extends HttpServlet {
 
 		if (request.getParameter("act") != null) {
 			String actValue = request.getParameter("act");
-			System.out.println("### DEBUG => ACT = " + actValue);
+			System.out.println("action is " + actValue);
 			if (actValue.equals("prefix")) {
 				if (request.getParameter("prefix") != null) {
 					String prefixValue = request.getParameter("prefix");
-					System.out.println("### DEBUG Prefix = " + prefixValue.length());
+					System.out.println("prefix for action is" + prefixValue);
 					if (prefixValue.length() != 0) {
 						
 						StringBuffer buffer = new StringBuffer();
@@ -74,18 +74,17 @@ public class WebSrcController extends HttpServlet {
 								
 								buffer.append("\"" + s + "\",");
 							}
-							System.out.println("Returnung " + invertedIndexObj.predictWord(prefixValue));
+							System.out.println("Return value is " + invertedIndexObj.predictWord(prefixValue));
 							buffer.append("\" \"]");
 						}
 						response.getWriter().print(buffer.toString());
 					}
 				}
 			} else if (actValue.equals("getTopUrl")) {
-				System.out.println("### DEBUG => ACT = " + actValue);
+				System.out.println("action is  " + actValue);
 				String prefixValue = request.getParameter("prefix");
-				System.out.println("### DEBUG prefix = " + prefixValue);
+				System.out.println(" value is " + prefixValue);
 				if (prefixValue != null) {
-					System.out.println("### DEBUG prefix = " + prefixValue.length());
 					if (prefixValue.length() != 0) {
 						ArrayList<String> e = new ArrayList<String>();
 						JSONArray obj = new JSONArray();
@@ -128,17 +127,10 @@ public class WebSrcController extends HttpServlet {
 	public static void main (String[] args) {
 		Collection<WebCrawlerNode> nodesSaved = null;
 		try {
-			System.out.println("### DEBUG - Servlet Initialization ###");
-			System.out.println("### DEBUG - Will try to load WebCrawler Serialized file.");
 			nodesSaved = (Collection<WebCrawlerNode>)WebCrawlerManager.loadSerializedObject("LinkedList-luis", "LinkedList");
-			System.out.println("### DEBUG - WebCrawler Serialized file loaded Successfully");			
-			System.out.println("### DEBUG - Will instantiate INVERTED INDEX Search Structure");
 			InvertedIndex invertedIndexEngine = new InvertedIndex();
-			System.out.println("### DEBUG - INVERTED INDEX Search Structure Instantiated");
 			invertedIndexEngine.dataUpdated(nodesSaved);
-			System.out.println("### DEBUG - INVERTED INDEX Will be saved to file");
 			WebCrawlerManager.saveSerializableObject("InvertedIdxIluisRueda", invertedIndexEngine);			
-			System.out.println("### DEBUG - INVERTED INDEX saved to file");			
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}		
