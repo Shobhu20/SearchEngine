@@ -17,41 +17,27 @@ import WebCrawler.WebCrawlerNode;
 import implementations.InvertedIndex;
 
 
-@WebServlet("/WebSrcController")
-public class WebSrcController extends HttpServlet {
+@WebServlet("/searchController")
+public class SearchController extends HttpServlet {
 	
-	private static final long serialVersionUID = 1L;
-	
-	private static final String CRAWLER_NODES_FILE = "luis";
-	
-	
+	private static final long serialVersionUID = 1L;	
 	InvertedIndex invertedIndexObj;
 
-	
-	public WebSrcController() {
+	public SearchController() {
 		super();
 	}
-
-	
    
     public void init() throws ServletException {
     	
 		Collection<WebCrawlerNode> savedNode = null;
 		try {
-			
 			savedNode = (Collection<WebCrawlerNode>)WebCrawlerManager.loadSerializedObject(getServletContext().getRealPath("/WEB-INF/LinkedList-luis.ser"), "LinkedList");
-		
 			invertedIndexObj = new InvertedIndex();
-			System.out.println("INVERTED INDEX Started");
 			invertedIndexObj.dataUpdated(savedNode);
 		} catch (ClassNotFoundException | IOException e) {
 			System.out.println(e);
 		}
     }	
-	
-	
-	
-	
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {

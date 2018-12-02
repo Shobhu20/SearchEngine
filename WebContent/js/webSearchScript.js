@@ -25,7 +25,7 @@ function getSuggestion() {
 		}
 	};
 	var str = $('#usr').val();
-	xhttp.open("GET", "WebSrcController?act=prefix&prefix=" + str, true);
+	xhttp.open("GET", "searchController?act=prefix&prefix=" + str, true);
 	xhttp.send();
 
 }
@@ -60,7 +60,7 @@ function getTopUrls() {
 		}
 	};
 	var str = $('#usr').val();
-	xhttp.open("GET", "WebSrcController?act=getTopUrl&prefix=" + str, true);
+	xhttp.open("GET", "searchController?act=getTopUrl&prefix=" + str, true);
 	xhttp.send();
 
 }
@@ -98,7 +98,7 @@ function getrecommendedWord() {
 		}
 	};
 	var str = $('#usr').val();
-	xhttp.open("GET", "WebSrcController?act=getWordSuggestion&prefix=" + str, true);
+	xhttp.open("GET", "searchController?act=getWordSuggestion&prefix=" + str, true);
 	xhttp.send();
 
 }
