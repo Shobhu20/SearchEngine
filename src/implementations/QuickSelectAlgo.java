@@ -1,5 +1,5 @@
-<<<<<<< HEAD:src/resources/QuickSelectAlgo.java
-package resources;
+package implementations;
+
 
 /*
  * 
@@ -8,9 +8,6 @@ package resources;
  */
 
 
-=======
-package implementations;
->>>>>>> 53760bac131681537194f88074a5c9a17cf344e3:src/implementations/QuickSelectAlgo.java
 public class QuickSelectAlgo {
 	 public int findKthLargest(int[] nums, int k) {
 	        int start = 0, end = nums.length - 1, index = nums.length - k;
