@@ -29,5 +29,4 @@ public class SerializeData implements Serializable {
 		System.out.println(obj.predictWord("test"));	
 	}
 	
-
 }

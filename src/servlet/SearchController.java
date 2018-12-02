@@ -44,20 +44,16 @@ public class SearchController extends HttpServlet {
 		response.setContentType("text/html");
 
 
-		if (request.getParameter("act") != null) {
-			String actValue = request.getParameter("act");
-			System.out.println("action is " + actValue);
+		if (request.getParameter("action") != null) {
+			String actValue = request.getParameter("action");
 			if (actValue.equals("prefix")) {
 				if (request.getParameter("prefix") != null) {
 					String prefixValue = request.getParameter("prefix");
-					System.out.println("prefix for action is" + prefixValue);
 					if (prefixValue.length() != 0) {
-						
 						StringBuffer buffer = new StringBuffer();
 						buffer.append("[");
 						if (invertedIndexObj.predictWord(prefixValue) != null) {
 							for (String s : invertedIndexObj.predictWord(prefixValue)) {
-								
 								buffer.append("\"" + s + "\",");
 							}
 							System.out.println("Return value is " + invertedIndexObj.predictWord(prefixValue));
@@ -67,21 +63,16 @@ public class SearchController extends HttpServlet {
 					}
 				}
 			} else if (actValue.equals("getTopUrl")) {
-				System.out.println("action is  " + actValue);
 				String prefixValue = request.getParameter("prefix");
-				System.out.println(" value is " + prefixValue);
 				if (prefixValue != null) {
 					if (prefixValue.length() != 0) {
 						ArrayList<String> e = new ArrayList<String>();
 						JSONArray obj = new JSONArray();
-						
 						if (invertedIndexObj.getMostRelevantUrls(prefixValue) != null) {
 							int i = 0;
 							for (String s : invertedIndexObj.getMostRelevantUrls(prefixValue)) {
 								if (s != null) {
-									System.out.println("### DEBUG => getTopUrl = " + i + " => " + s);
 									i++;
-									
 									obj.put(s);
 								}
 							}
@@ -106,21 +97,6 @@ public class SearchController extends HttpServlet {
 			}
 		}
 		response.getWriter().print("");
-	}	
-	
-
-	
-	public static void main (String[] args) {
-		Collection<WebCrawlerNode> nodesSaved = null;
-		try {
-			nodesSaved = (Collection<WebCrawlerNode>)WebCrawlerManager.loadSerializedObject("LinkedList-luis", "LinkedList");
-			InvertedIndex invertedIndexEngine = new InvertedIndex();
-			invertedIndexEngine.dataUpdated(nodesSaved);
-			WebCrawlerManager.saveSerializableObject("InvertedIdxIluisRueda", invertedIndexEngine);			
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
-		}		
 	}
-	
 
 }
