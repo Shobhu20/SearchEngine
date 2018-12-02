@@ -252,7 +252,7 @@ public class InvertedIndex implements Serializable {
 	// *****************************************
 	// function to be exposed to load the data
 	// *****************************************
-	public void updatedloadData(Collection<WebCrawlerNode> e) {
+	public void dataUpdated(Collection<WebCrawlerNode> e) {
 
 			// process each element and pass it to the trie
 			Iterator<WebCrawlerNode> itr = e.iterator();
@@ -276,7 +276,7 @@ public class InvertedIndex implements Serializable {
 	// function to return a String array of
 	// top urls for the matching word
 	// *************************************
-	public String[] getTopUrls(String word) {
+	public String[] getMostRelevantUrls(String word) {
 		int docNum = search(word);
 		System.out.println("Word is present at " + docNum);
 		if (docNum != -1) {
@@ -317,31 +317,36 @@ public class InvertedIndex implements Serializable {
 		}
 	}
 
-	public String[] guessWord(String prefix) {
-		Tries curr = root;
-		int wordLength = 0;
+	public String[] predictWord(String prefix) {
+		Tries current = root;
+		int lengthOfWord = 0;
 		String predictedWords[] = null;
 		
 		// get the count of number of words available
-		for (int i = 0; i < prefix.length(); i++) {
-			if (curr.getChild(prefix.charAt(i)) == null) {
+		//for (int i = 0; i < prefix.length(); i++)
+		int i=0;
+		while(i<prefix.length()){
+			if (current.getChild(prefix.charAt(i)) == null) {
 				System.out.println("No suggestion");
 				return null;
 			} else if (i == (prefix.length() - 1)) {
-				curr = curr.getChild(prefix.charAt(i));
-				System.out.println("Char reading = "+ prefix.charAt(i));
-				System.out.println("Curr value =" + curr.data + "===Curr count= " + curr.count);
-				wordLength = curr.count;
+				current = current.getChild(prefix.charAt(i));
+				System.out.println("Reading Character = "+ prefix.charAt(i));
+				System.out.println("Current value =" + current.data + "===Current count= " + current.count);
+				lengthOfWord = current.count;
 			} else {
-				curr = curr.getChild(prefix.charAt(i));
+				current = current.getChild(prefix.charAt(i));
 			}
+			i++;
 		}
-		System.out.println("Number of words to be returned =" + wordLength);
+		System.out.println("Number of words to be returned =" + lengthOfWord);
 
 		// preparing the output buffer
-		predictedWords = new String[wordLength];
-		for (int i = 0; i < predictedWords.length; i++) {
-			predictedWords[i] = prefix;
+		predictedWords = new String[lengthOfWord];
+		int j=0;
+		while(j<predictedWords.length){
+			predictedWords[j] = prefix;
+			j++;
 		}
 
 		// Temp array list to find all childs
@@ -351,37 +356,39 @@ public class InvertedIndex implements Serializable {
 
 		// get the prefix child
 		int counter = 0;
-		if (curr.childNode != null) {
-			for (Tries e : curr.childNode) {
+		if (current.childNode != null) {
+			for (Tries e : current.childNode) {
 				currentChildBuffer.add(e);
 			}
 		}
 
 		// iterating all the children
 		while (currentChildBuffer.size() != 0) {
-			for (Tries e : currentChildBuffer) {
+			for (Tries tr : currentChildBuffer) {
 
 				// populate the string word
 				while (wordCompleted.get(counter) != null) {
 					counter++;
 				}
-				for (int j = 0; j < e.count; j++) {
+				int k =0;
+				while(k<tr.count) {
 					 System.out.println(
-		 			 "e.data " + e.data + "========boolena" + e.isEnd +
-					 "=========e.counter " + e.count);
+		 			 "e.data " + tr.data + "========boolena" + tr.isEnd +
+					 "=========e.counter " + tr.count);
 					 
 					 //fixing to get the corrcet word
-					if (e.isEnd && j == (e.count-1)) {
+					if (tr.isEnd && k == (tr.count-1)) {
 						wordCompleted.put(counter, "done");
 					}
 					 System.out.println("counter " + counter);
-					predictedWords[counter] = predictedWords[counter] + e.data;
+					predictedWords[counter] = predictedWords[counter] + tr.data;
 					counter++;
+					k++;
 				}
 
 				// iterating the child of each char
-				for (Tries e1 : e.childNode) {
-					nextChildBuffer.add(e1);
+				for (Tries t : tr.childNode) {
+					nextChildBuffer.add(t);
 				}
 			}
 
@@ -398,15 +405,15 @@ public class InvertedIndex implements Serializable {
 		}
 
 		// output buffer
-		for (String s : predictedWords) {
-			System.out.println("Predicted Words =" + s);
+		for (String str : predictedWords) {
+			System.out.println("Predicted Words =" + str);
 		}
 
 		return predictedWords;
 	}
 
 	public ArrayList<String> findSuggestedWord(String searchWord) {
-		String wordsStartingWithSameLetterList[] = guessWord(searchWord.substring(0, 1));
+		String wordsStartingWithSameLetterList[] = predictWord(searchWord.substring(0, 1));
 		ArrayList<String> suggestedWordList = new ArrayList<String>();
 		for (String wordsStartingWithSameLetter : wordsStartingWithSameLetterList) {
 			if (findEditDistance(searchWord, wordsStartingWithSameLetter) == 1) {
@@ -421,103 +428,6 @@ public class InvertedIndex implements Serializable {
 	// *****************************************
 	public static void main(String[] arr) {
 		InvertedIndex t = new InvertedIndex();
-//		System.out.println(t.findEditDistance("been", "bee"));
-//		
-//		ArrayList<String> e = new ArrayList<String>();
-//		String url1 = "www.test.com";
-//		String url2 = "www.test2.com";
-//		String url3 = "www.test3.com";
-//		String url4 = "www.test4.com";
-//		String url5 = "www.test5.com";
-//		String url6 = "www.test6.com";
-//		e.add("been");
-//		e.add("been1");
-//		e.add("hello2");
-//		e.add("hello3");
-//		e.add("hello4");
-//		e.add("hello5");
-//		e.add("hello6");
-//		e.add("hello7");
-//		e.add("hello8");
-//		e.add("hello9");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hen");
-//		e.add("hens");
-//		e.add("hell");
-//		t.loadData(e, url1);
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		t.loadData(e, url2);
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		t.loadData(e, url3);
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		t.loadData(e, url4);
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello11");
-//		t.loadData(e, url5);
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		e.add("hello10");
-//		t.loadData(e, url6);
-//
-//		// testing the inverted index and rankings
-//		System.out.println("Element hello doc no = " + t.search("hello10"));
-//		 System.out.println(invertedIdxArray);
-//		for(String s: t.getTopUrls("hen")){
-//		  System.out.println(s);
-//		 }
-
-		// testing the guessing of the words
-		 //t.guessWord("h");
-
-		// testing the correction of words
-		//t.findCorrection("hello101");
-
-//		HashMap<Integer,Integer> t = new HashMap<>();
-//		t.put(10,10);
-//		 SerializeData obj1= new SerializeData();
-//		 try {
-//		 //obj1.writeData(t);
-//		 obj1.readData();
-//		 } catch (IOException e1) {
-//		 // TODO Auto-generated catch block
-//		 e1.printStackTrace();
-//		 } catch (Exception e1) {
-//		 // TODO Auto-generated catch block
-//		 e1.printStackTrace();
-//		 }
-
 	}
 
 }

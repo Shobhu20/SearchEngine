@@ -27,7 +27,7 @@ public class WebSrcController extends HttpServlet {
 	private static final String CRAWLER_NODES_FILE = "luis";
 	
 	// Inverted Index for Web Search
-	InvertedIndex invertedIndexEngine;
+	InvertedIndex invertedIndexObj;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -43,18 +43,16 @@ public class WebSrcController extends HttpServlet {
      */
     public void init() throws ServletException {
     	
-		Collection<WebCrawlerNode> nodesSaved = null;
+		Collection<WebCrawlerNode> savedNode = null;
 		try {
-			System.out.println("### DEBUG - Servlet Initialization ###");
-			System.out.println("### DEBUG - Will try to load WebCrawler Serialized file.");
-			nodesSaved = (Collection<WebCrawlerNode>)WebCrawlerManager.loadSerializedObject(getServletContext().getRealPath("/WEB-INF/LinkedList-luis.ser"), "LinkedList");
-			System.out.println("### DEBUG - WebCrawler Serialized file loaded Successfully");			
-			System.out.println("### DEBUG - Will instantiate INVERTED INDEX Search Structure");
-			invertedIndexEngine = new InvertedIndex();
-			System.out.println("### DEBUG - INVERTED INDEX Search Structure Instantiated");
-			invertedIndexEngine.updatedloadData(nodesSaved);
+			
+			savedNode = (Collection<WebCrawlerNode>)WebCrawlerManager.loadSerializedObject(getServletContext().getRealPath("/WEB-INF/LinkedList-luis.ser"), "LinkedList");
+		
+			invertedIndexObj = new InvertedIndex();
+			System.out.println("INVERTED INDEX Started");
+			invertedIndexObj.dataUpdated(savedNode);
 		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
+			System.out.println(e);
 		}
     }	
 	
@@ -67,11 +65,11 @@ public class WebSrcController extends HttpServlet {
 		response.setContentType("text/html");
 		
 		// TO check if InvertedIndex was instantiated 
-		if (invertedIndexEngine != null) {
-			System.out.println("### DEBUG => Inverted Index loaded and instantianted");
-		} else {
-			System.out.println("### DEBUG => Inverted Index IS NULL");
-		}
+//		if (invertedIndexObj != null) {
+//			System.out.println("### DEBUG => Inverted Index loaded and instantianted");
+//		} else {
+//			System.out.println("### DEBUG => Inverted Index IS NULL");
+//		}
 
 		if (request.getParameter("act") != null) {
 			String actValue = request.getParameter("act");
@@ -84,12 +82,12 @@ public class WebSrcController extends HttpServlet {
 						//org.json.JSONArray obj = new JSONArray();
 						StringBuffer buffer = new StringBuffer();
 						buffer.append("[");
-						if (invertedIndexEngine.guessWord(prefixValue) != null) {
-							for (String s : invertedIndexEngine.guessWord(prefixValue)) {
+						if (invertedIndexObj.predictWord(prefixValue) != null) {
+							for (String s : invertedIndexObj.predictWord(prefixValue)) {
 								//obj.put(s);
 								buffer.append("\"" + s + "\",");
 							}
-							System.out.println("Returnung " + invertedIndexEngine.guessWord(prefixValue));
+							System.out.println("Returnung " + invertedIndexObj.predictWord(prefixValue));
 							buffer.append("\" \"]");
 						}
 						response.getWriter().print(buffer.toString());
@@ -105,9 +103,9 @@ public class WebSrcController extends HttpServlet {
 						ArrayList<String> e = new ArrayList<String>();
 						JSONArray obj = new JSONArray();
 						//StringBuffer buffer = new StringBuffer();
-						if (invertedIndexEngine.getTopUrls(prefixValue) != null) {
+						if (invertedIndexObj.getMostRelevantUrls(prefixValue) != null) {
 							int i = 0;
-							for (String s : invertedIndexEngine.getTopUrls(prefixValue)) {
+							for (String s : invertedIndexObj.getMostRelevantUrls(prefixValue)) {
 								if (s != null) {
 									System.out.println("### DEBUG => getTopUrl = " + i + " => " + s);
 									i++;
@@ -123,7 +121,7 @@ public class WebSrcController extends HttpServlet {
 				String prefixValue = request.getParameter("prefix");
 				if (prefixValue != null && !prefixValue.equals("")) {
 						JSONArray jsonArrayOfSuggestedWords = new JSONArray();
-						ArrayList<String> suggestedWordList = invertedIndexEngine.findSuggestedWord(prefixValue);
+						ArrayList<String> suggestedWordList = invertedIndexObj.findSuggestedWord(prefixValue);
 						if (suggestedWordList != null && suggestedWordList.size() !=0 ) {
 							for (String suggestedWord : suggestedWordList) {
 								if (suggestedWord != null && !suggestedWord.equals("")) {
@@ -150,7 +148,7 @@ public class WebSrcController extends HttpServlet {
 			System.out.println("### DEBUG - Will instantiate INVERTED INDEX Search Structure");
 			InvertedIndex invertedIndexEngine = new InvertedIndex();
 			System.out.println("### DEBUG - INVERTED INDEX Search Structure Instantiated");
-			invertedIndexEngine.updatedloadData(nodesSaved);
+			invertedIndexEngine.dataUpdated(nodesSaved);
 			System.out.println("### DEBUG - INVERTED INDEX Will be saved to file");
 			WebCrawlerManager.saveSerializableObject("InvertedIdxIluisRueda", invertedIndexEngine);			
 			System.out.println("### DEBUG - INVERTED INDEX saved to file");			
