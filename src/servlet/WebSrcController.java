@@ -119,25 +119,19 @@ public class WebSrcController extends HttpServlet {
 						response.getWriter().print(obj);
 					}
 				}
-			} else if (actValue.equals("getCorWord")) {
-				System.out.println("### DEBUG => ACT = " + actValue);
+			} else if (actValue.equals("getWordSuggestion")) {
 				String prefixValue = request.getParameter("prefix");
-				System.out.println("### DEBUG prefix = " + prefixValue.length());
-				if (prefixValue != null) {
-					if (prefixValue.length() != 0) {
-						ArrayList<String> e = new ArrayList<String>();
-						JSONArray obj = new JSONArray();
-						//StringBuffer buffer = new StringBuffer();
-						if (invertedIndexEngine.findCorrection(prefixValue) != null) {
-							for (String s : invertedIndexEngine.findCorrection(prefixValue)) {
-								if (s != null) {
-									//buffer.append(s);
-									obj.put(s);
+				if (prefixValue != null && !prefixValue.equals("")) {
+						JSONArray jsonArrayOfSuggestedWords = new JSONArray();
+						ArrayList<String> suggestedWordList = invertedIndexEngine.findSuggestedWord(prefixValue);
+						if (suggestedWordList != null && suggestedWordList.size() !=0 ) {
+							for (String suggestedWord : suggestedWordList) {
+								if (suggestedWord != null && !suggestedWord.equals("")) {
+									jsonArrayOfSuggestedWords.put(suggestedWord);
 								}
 							}
 						}
-						response.getWriter().print(obj);
-					}
+						response.getWriter().print(jsonArrayOfSuggestedWords);
 				}
 			}
 		}

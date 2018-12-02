@@ -212,32 +212,29 @@ public class InvertedIndex implements Serializable {
 		}
 		curr.isEnd = false;
 	}
-
-	// *************************************
-	// Find the distance between two words
-	// Using the dynamic method describe
-	// in the class
-	// *************************************
+	
 	public int findEditDistance(String s1, String s2) {
-		int distance[][] = new int[s1.length() + 1][s2.length() + 1];
-		for (int i = 0; i <= s1.length(); i++) {
-			distance[i][0] = i;
+		int str1Length = s1.length();
+		int str2Length = s2.length();
+		int editDistanceMatrix[][] = new int[str1Length + 1][str2Length + 1];
+		for (int i = 0; i <= str1Length; i++) {
+			editDistanceMatrix[i][0] = i;
 		}
-		for (int i = 0; i <= s2.length(); i++) {
-			distance[0][i] = i;
+		for (int i = 0; i <= str2Length; i++) {
+			editDistanceMatrix[0][i] = i;
 		}
-		for (int i = 1; i < s1.length(); i++) {
-			for (int j = 1; j < s2.length(); j++) {
+		for (int i = 1; i < str1Length; i++) {
+			for (int j = 1; j < str2Length; j++) {
 				if (s1.charAt(i) == s2.charAt(j)) {
-					distance[i][j] = Math.min(Math.min((distance[i - 1][j]) + 1, (distance[i][j - 1]) + 1),
-							(distance[i - 1][j - 1]));
+					editDistanceMatrix[i][j] = editDistanceMatrix[i - 1][j - 1];
 				} else {
-					distance[i][j] = Math.min(Math.min((distance[i - 1][j]) + 1, (distance[i][j - 1]) + 1),
-							(distance[i - 1][j - 1]) + 1);
+					editDistanceMatrix[i][j] = Math.min(Math.min((editDistanceMatrix[i - 1][j]) + 1, (editDistanceMatrix[i][j - 1]) + 1),
+							(editDistanceMatrix[i - 1][j - 1]) + 1);
 				}
 			}
 		}
-		return distance[s1.length() - 1][s2.length() - 1];
+		int editDistance = editDistanceMatrix[str1Length - 1][str2Length - 1];
+		return editDistance;
 	}
 
 	// *****************************************
@@ -320,9 +317,6 @@ public class InvertedIndex implements Serializable {
 		}
 	}
 
-	// *************************************
-	// guessing the word
-	// *************************************
 	public String[] guessWord(String prefix) {
 		Tries curr = root;
 		int wordLength = 0;
@@ -411,27 +405,15 @@ public class InvertedIndex implements Serializable {
 		return predictedWords;
 	}
 
-	// ************************************* ****************************
-	// function to provide the most suitable word for the input word
-	// This needs to be called only of the word is not found in the trie
-	// ******************************************************************
-	public String[] findCorrection(String word) {
-		String suggestion[] = guessWord(word.substring(0, 1));
-		ArrayList<String> correction = new ArrayList<String>();
-		for (String s : suggestion) {
-			if (findEditDistance(word, s) == 1) {
-				correction.add(s);
+	public ArrayList<String> findSuggestedWord(String searchWord) {
+		String wordsStartingWithSameLetterList[] = guessWord(searchWord.substring(0, 1));
+		ArrayList<String> suggestedWordList = new ArrayList<String>();
+		for (String wordsStartingWithSameLetter : wordsStartingWithSameLetterList) {
+			if (findEditDistance(searchWord, wordsStartingWithSameLetter) == 1) {
+				suggestedWordList.add(wordsStartingWithSameLetter);
 			}
 		}
-
-		String suggestedWord[] = (String[]) correction.toArray(new String[0]);
-		System.out.println("*********correction*********");
-		for (String s : suggestedWord) {
-			System.out.println(s);
-		}
-
-		return suggestedWord;
-
+		return suggestedWordList;
 	}
 
 	// *****************************************

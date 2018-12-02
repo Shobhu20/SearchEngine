@@ -99,7 +99,7 @@ function getrecommendedWord() {
 		}
 	};
 	var str = $('#usr').val();
-	xhttp.open("GET", "WebSrcController?act=getCorWord&prefix=" + str, true);
+	xhttp.open("GET", "WebSrcController?act=getWordSuggestion&prefix=" + str, true);
 	xhttp.send();
 
 }
