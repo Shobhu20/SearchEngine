@@ -50,23 +50,6 @@ public class WebCrawlerManager {
 	    return loadedObject;
 	}   
 	
-	public static void main(String[] args) throws IOException, ClassNotFoundException {
-//		WebCrawler webCrawler = new WebCrawler(2000);
-//		webCrawler.buildWebCrawl("https://www.raywenderlich.com/");
-//		System.out.println("List size : " + webCrawler.getWebCrawledNodes().size());
-//		Collection<WebCrawlerNode> nodesMemory = webCrawler.getWebCrawledNodes();
-//		Iterator<WebCrawlerNode> it = nodesMemory.iterator();
-//		while(it.hasNext()) {
-//			WebCrawlerNode node = it.next();
-//		}
-//		WebCrawlerManager.saveSerializableObject("Raywanderlich2000URLs", webCrawler.getWebCrawledNodes());	
-//		System.out.println("File saved!");
-		
-//		Collection<WebCrawlerNode> nodesSaved = (Collection<WebCrawlerNode>)WebCrawlerManager.loadSerializedObject("raywanderlich", "LinkedList");
-//		InvertedIndex obj = new InvertedIndex();
-//		obj.dataUpdated(nodesSaved);
-//		WebCrawlerManager.saveSerializableObject("luisDictonary", obj);				
-   }
    
 }
 

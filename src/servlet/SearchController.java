@@ -21,12 +21,8 @@ import implementations.InvertedIndex;
 public class SearchController extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;	
-	InvertedIndex invertedIndexObj;
+	private InvertedIndex invertedIndexObj;
 
-	public SearchController() {
-		super();
-	}
-   
     public void init() throws ServletException {
     	
 		Collection<WebCrawlerNode> savedNode = null;
