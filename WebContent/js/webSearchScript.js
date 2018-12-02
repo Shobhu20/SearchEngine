@@ -43,15 +43,14 @@ function getTopUrls() {
 			if ($.parseJSON(xhttp.responseText).length > 0) {
 				console.log("insoder");
 				$.each($.parseJSON(xhttp.responseText), function(index, value) {
-					createTable += "<tr><td><a href = \"" + value
+					createTable += "<tr><td  style=\"text-align: left;\"><a href = \"" + value
 							+ "\">" + value + "</td></tr>";
 					console.log(createTable);
 				});
 				document.getElementById("solutionBar").style.display = "block";
-				$("#test").replaceWith("<div id = \"test\"></div>");
-				$("#test")
-						.append(
-								"<table class=\"table table-striped\"><thead><tr><th>Result Found:</th></tr></thead><tbody>"
+				$("#test").replaceWith("<div id = \"test\" style=\"width:100%;\"></div>");
+				$("#test").append(
+								"<table class=\"mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp\" style=\"width:100%;\"><thead><tr><th style=\"text-align: center;\">Result(s) Found:</th></tr></thead><tbody>"
 										+ createTable + "</tbody></table>");
 			} else {
 				console.log("Returned zero, will call recomended Words!");
@@ -80,21 +79,21 @@ function getrecommendedWord() {
 			if ($.parseJSON(xhttp.responseText).length > 0) {
 				console.log("insoder");
 				$.each($.parseJSON(xhttp.responseText), function(index, value) {
-					createTable += "<tr><td>" + value + "</td></tr>";
+					createTable += "<tr><td style=\"text-align: left;\">" + value + "</td></tr>";
 					console.log(createTable);
 				});
 				document.getElementById("solutionBar").style.display = "block";
-				$("#test").replaceWith("<div id = \"test\"></div>");
+				$("#test").replaceWith("<div id = \"test\" style=\"width:100%;\"></div>");
 				$("#test")
 						.append(
-								"<table class=\"table table-striped\"><thead><tr><th>No Match Found !!! You may try Below Words:</th></tr></thead><tbody>"
+								"<table class=\"mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp\" style=\"width:100%;\"><thead><tr><th style=\"text-align: center;\">No Match Found !!! You may try Below Words:</th></tr></thead><tbody>"
 										+ createTable + "</tbody></table>");
 			} else {
 				document.getElementById("solutionBar").style.display = "block";
-				$("#test").replaceWith("<div id = \"test\"></div>");
+				$("#test").replaceWith("<div id = \"test\" style=\"width:100%;\"></div>");
 				$("#test")
 						.append(
-								"<table class=\"table table-striped\"><thead><tr><th>No Match Found</th></tr></thead></table>");
+								"<table class=\"mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp\" style=\"width:100%;\"><thead><tr><th style=\"text-align: center;\">No Match Found</th></tr></thead></table>");
 			}
 		}
 	};

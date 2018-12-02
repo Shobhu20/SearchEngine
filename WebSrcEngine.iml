@@ -1,31 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="JAVA_MODULE" version="4">
   <component name="EclipseModuleManager">
-    <libelement value="file:///Users/yadwindersingh/Documents/apache-tomcat-8.0.37/lib/servlet-api.jar" />
-    <libelement value="file:///Users/yadwindersingh/.m2/repository/com/googlecode/json-simple/json-simple/1.1.1/json-simple-1.1.1-sources.jar" />
-    <libelement value="file:///Users/yadwindersingh/.m2/repository/com/googlecode/json-simple/json-simple/1.1.1/json-simple-1.1.1.jar" />
-    <libelement value="file:///Users/yadwindersingh/Downloads/ACC Project/lib/jsoup-1.8.1-javadoc.jar" />
-    <libelement value="file:///Users/yadwindersingh/Downloads/ACC Project/lib/jsoup-1.8.1-sources.jar" />
-    <libelement value="file:///Users/yadwindersingh/Downloads/ACC Project/lib/jsoup-1.8.1.jar" />
-    <conelement value="org.eclipse.jst.server.core.container/com.ibm.ws.st.core.runtimeClasspathProvider/WebSphere Application Server Liberty (2)" />
-    <conelement value="org.eclipse.jst.j2ee.internal.web.container" />
+    <libelement value="file:///home/jknator/Desktop/WebSrcEngine-master/src/lib/jsoup-1.8.1.jar" />
+    <libelement value="file:///home/jknator/Desktop/WebSrcEngine-master/src/lib/jsoup-1.8.1-javadoc.jar" />
+    <libelement value="file:///home/jknator/Desktop/WebSrcEngine-master/src/lib/jsoup-1.8.1-sources.jar" />
+    <libelement value="file:///home/jknator/Downloads/javax.servlet-api-3.1.0.jar" />
+    <libelement value="file:///home/jknator/Desktop/WebSrcEngine-master/src/lib/java-json.jar" />
+    <libelement value="file:///home/jknator/Desktop/org.json.jar" />
     <conelement value="org.eclipse.jst.j2ee.internal.module.container" />
-    <src_description expected_position="1">
+    <conelement value="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v5.0" />
+    <conelement value="org.eclipse.jst.j2ee.internal.web.container" />
+    <conelement value="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v8.0" />
+    <src_description expected_position="0">
       <src_folder value="file://$MODULE_DIR$/src" expected_position="0" />
-      <src_folder value="file://$MODULE_DIR$/.apt_generated" expected_position="2" />
+      <src_folder value="file://$MODULE_DIR$/.apt_generated" expected_position="1" />
     </src_description>
-  </component>
-  <component name="FacetManager">
-    <facet type="web" name="Web">
-      <configuration>
-        <descriptors>
-          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/WebContent/WEB-INF/web.xml" />
-        </descriptors>
-        <webroots>
-          <root url="file://$MODULE_DIR$/WebContent" relative="/" />
-        </webroots>
-      </configuration>
-    </facet>
   </component>
   <component name="NewModuleRootManager">
     <output url="file://$MODULE_DIR$/build/classes" />
@@ -34,60 +23,39 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/.apt_generated" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="org.eclipse.jst.server.core.container/com.ibm.ws.st.core.runtimeClasspathProvider/WebSphere Application Server Liberty (2)" level="application" />
-    <orderEntry type="library" name="org.eclipse.jst.j2ee.internal.web.container" level="application" />
-    <orderEntry type="library" name="org.eclipse.jst.j2ee.internal.module.container" level="application" />
-    <orderEntry type="module-library">
-      <library name="servlet-api.jar">
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="module-library" exported="">
+      <library>
         <CLASSES>
-          <root url="file:///Users/yadwindersingh/Documents/apache-tomcat-8.0.37/lib/servlet-api.jar" />
+          <root url="jar://$USER_HOME$/Downloads/json-simple-2.1.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="json-simple-1.1.1-sources.jar">
-        <CLASSES />
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/src/lib/json-simple-1.1.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="json-simple-1.1.1.jar">
-        <CLASSES />
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/src/lib/json-simple-1.1.1-sources.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" exported="">
-      <library name="jsoup-1.8.1-javadoc.jar">
+      <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/src/lib/jsoup-1.8.1.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/jsoup-1.11.3.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="jsoup-1.8.1-sources.jar">
-        <CLASSES />
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Downloads/org.json.jar!/" />
+        </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/build/classes/lib/jsoup-1.8.1-sources.jar!/" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library" exported="">
-      <library name="jsoup-1.8.1.jar">
+      <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/build/classes/lib/jsoup-1.8.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/src/lib/javax.servlet-api-3.1.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
