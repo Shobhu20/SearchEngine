@@ -5,7 +5,7 @@ import java.io.*;
 import java.util.Collection;
 import java.util.Iterator;
 
-import resources.InvertedIndex;
+import implementations.InvertedIndex;
 
 public class WebCrawlerManager {
 	
