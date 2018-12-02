@@ -5,8 +5,7 @@ import java.io.*;
 import java.util.Collection;
 import java.util.Iterator;
 
-import resources.InvertedIndex;
-import utilities.Util;
+import implementations.InvertedIndex;
 
 public class WebCrawlerManager {
 	
@@ -29,7 +28,6 @@ public class WebCrawlerManager {
 		out.close();
 		fileOut.close();
 		saved = true;
-		Util.printDebug(true, "Serialization Done at: " + fileOut.toString());
 		return saved;
 	}
    
@@ -66,7 +64,6 @@ public class WebCrawlerManager {
 		out.close();
 		fileOut.close();
 		saved = true;
-		Util.printDebug(true, "Serialization Done at: " + fileOut.toString());
 		return saved;
 	}
 	
@@ -132,9 +129,9 @@ public class WebCrawlerManager {
 //		System.out.println("Now will load from file ...........");
 		Collection<WebCrawlerNode> nodesSaved = (Collection<WebCrawlerNode>)WebCrawlerManager.loadSerializedObject("luis", "LinkedList");
 		InvertedIndex obj = new InvertedIndex();
-		obj.updatedloadData(nodesSaved);
+		obj.dataUpdated(nodesSaved);
 		//WebCrawlerManager.saveSerializableObject("luisDictonary", obj);		
-		obj.guessWord("l");
+		obj.predictWord("l");
 //		
    }
    
