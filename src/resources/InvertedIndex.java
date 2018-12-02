@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 
-//Class to implement Trie
+
 class Tries implements Serializable  {
 	char data;
 	int count;
@@ -22,7 +22,7 @@ class Tries implements Serializable  {
 	int wordNumber;
 	LinkedList<Tries> childNode;
 
-	// Constructor
+	
 	public Tries(char n) {
 		data = n;
 		count = 0;
@@ -31,7 +31,7 @@ class Tries implements Serializable  {
 		childNode = new LinkedList<Tries>();
 	}
 
-	// getChar
+	
 	public Tries getChild(char c) {
 		if (childNode != null) {
 			for (Tries child : childNode) {
@@ -57,49 +57,43 @@ public class InvertedIndex implements Serializable {
 		currWordNumber = 1;
 	}
 
-	// *************************************
-	// update word occurrence in HashMap
-	// *************************************
+	
 	public void updateWordOccurrence(int num, String url) {
 
-		// if the doc is already present
+	
 		if (invertedIdxArray.get(num) != null) {
 
-			// check if the url was also captured earlier
+			
 			if (invertedIdxArray.get(num).get(url) != null) {
 
-				// update the occurrence of the word by 1
+				
 				invertedIdxArray.get(num).put(url, invertedIdxArray.get(num).get(url) + 1);
 			} else {
 
-				// word is found for the first time in this url
+				
 				invertedIdxArray.get(num).put(url, 1);
 			}
 		} else {
 
-			// if word is captured for first time
+			
 			HashMap<String, Integer> urlMap = new HashMap<java.lang.String, Integer>();
 			urlMap.put(url, 1);
 			invertedIdxArray.put(num, urlMap);
 		}
 	}
 
-	// *************************************
-	// insert a word in the Trie
-	// *************************************
 	public void insertWord(String word, String url) {
 
-		// if word found, update its occurrence
+		
 		int wordNum = search(word);
 		
 		if (wordNum != -1) {
-			//System.out.println("Adding new word in Trie" + word );
-			//System.out.println("Word doc n"+ wordNum);
+			
 			updateWordOccurrence(wordNum, url);
 			return;
 		}
 
-		// If not found -- add new one
+		
 		Tries curr = root;
 		for (char c : word.toCharArray()) {
 			Tries child = curr.getChild(c);
@@ -112,18 +106,15 @@ public class InvertedIndex implements Serializable {
 			curr.count++;
 		}
 
-		// Update the invertedIndex list
+		
 		curr.isEnd = true;
 		curr.wordNumber = currWordNumber;
 		updateWordOccurrence(curr.wordNumber, url);
-		//System.out.println("Adding new word in Trie" + word );
-		//System.out.println("Word doc n"+ currWordNumber);
+		
 		currWordNumber++;
 	}
 
-	// *************************************
-	// get all intertedIndexList
-	// *************************************
+	
 	public void getAllInvertedIndexList() {
 
 		System.out.println("Printing InvertedIndex List");
@@ -132,9 +123,7 @@ public class InvertedIndex implements Serializable {
 		}
 	}
 
-	// **************************************************
-	// find the word and if found return the wordNumber
-	// **************************************************
+	
 	public int search(String word) {
 		Tries curr = root;
 		for (char c : word.toCharArray()) {
@@ -151,9 +140,7 @@ public class InvertedIndex implements Serializable {
 		return -1;
 	}
 
-	// *************************************
-	// removing the word from Trie
-	// *************************************
+
 	public void remove(String word, String url) {
 
 		// check if the word is present
@@ -163,10 +150,10 @@ public class InvertedIndex implements Serializable {
 			return;
 		}
 
-		// handling the invertedIndex
+		
 		invertedIdxArray.get(wordNum).remove(url);
 
-		// handing the Trie
+		
 		Tries curr = root;
 		for (char c : word.toCharArray()) {
 			Tries child = curr.getChild(c);
@@ -205,69 +192,61 @@ public class InvertedIndex implements Serializable {
 		return editDistance;
 	}
 
-	// *****************************************
-	// function to be exposed to load the data
-	// *****************************************
+	
 	public void loadData(Collection e, String url) {
 
-		// process each element and pass it to the trie
+		
 		Iterator<String> itr = e.iterator();
 		while (itr.hasNext()) {
 			insertWord(itr.next(), url);
 		}
 	}
 
-	// *****************************************
-	// function to be exposed to load the data
-	// *****************************************
+
 	public void dataUpdated(Collection<WebCrawlerNode> e) {
 
-			// process each element and pass it to the trie
+			
 			Iterator<WebCrawlerNode> itr = e.iterator();
 			WebCrawlerNode webCrawledNodes= null;
 			while (itr.hasNext()) {
-				//System.out.println("reading Url ");
+				
 				webCrawledNodes = itr.next();
 				
 				Collection<String> eachWord = webCrawledNodes.getTextContentsTokens();
 				Iterator<String> itr1 = eachWord.iterator();
 				while(itr1.hasNext()){
-					//System.out.println("reading Url " + webCrawledNodes.getNodeBaseUrl());
+					
 					String input= itr1.next();
-					//System.out.println(input);
+					
 					insertWord(input,webCrawledNodes.getNodeBaseUrl());
 				}
 			}
 		}
 
-	// *************************************
-	// function to return a String array of
-	// top urls for the matching word
-	// *************************************
+
 	public String[] getMostRelevantUrls(String word) {
 		int docNum = search(word);
 		System.out.println("Word is present at " + docNum);
 		if (docNum != -1) {
 
-			// local variables
+			
 			int topk = 5;
 			int i = 0;
 
-			// Get all the url for the matching word
+		
 			HashMap<String, Integer> foundUrl = invertedIdxArray.get(docNum);
 
-			// prepare the array for the QuickSelect with word frequency
+		
 			final int[] frequency = new int[foundUrl.size()];
 			for (final int value : foundUrl.values()) {
 				frequency[i++] = value;
 			}
 
-			// Calling QuickSelect to get the 10th largest occurrence
+			
 			QuickSelectAlgo obj = new QuickSelectAlgo();
 			final int kthLargestFreq = obj.findKthLargest(frequency, topk);
 
-			// Populating the local array with the URL's having frequency
-			// greater than the k-1th largest element
+			
 			final String[] topKElements = new String[topk];
 			i = 0;
 			for (final java.util.Map.Entry<String, Integer> entry : foundUrl.entrySet()) {
@@ -290,8 +269,7 @@ public class InvertedIndex implements Serializable {
 		int lengthOfWord = 0;
 		String predictedWords[] = null;
 		
-		// get the count of number of words available
-		//for (int i = 0; i < prefix.length(); i++)
+		
 		int i=0;
 		while(i<prefix.length()){
 			if (current.getChild(prefix.charAt(i)) == null) {
@@ -309,7 +287,7 @@ public class InvertedIndex implements Serializable {
 		}
 		System.out.println("Number of words to be returned =" + lengthOfWord);
 
-		// preparing the output buffer
+	
 		predictedWords = new String[lengthOfWord];
 		int j=0;
 		while(j<predictedWords.length){
@@ -317,12 +295,12 @@ public class InvertedIndex implements Serializable {
 			j++;
 		}
 
-		// Temp array list to find all childs
+		
 		java.util.ArrayList<Tries> currentChildBuffer = new java.util.ArrayList<Tries>();
 		java.util.ArrayList<Tries> nextChildBuffer = new java.util.ArrayList<Tries>();
 		HashMap<Integer, String> wordCompleted = new HashMap<Integer, String>();
 
-		// get the prefix child
+		
 		int counter = 0;
 		if (current.childNode != null) {
 			for (Tries e : current.childNode) {
@@ -330,11 +308,11 @@ public class InvertedIndex implements Serializable {
 			}
 		}
 
-		// iterating all the children
+		
 		while (currentChildBuffer.size() != 0) {
 			for (Tries tr : currentChildBuffer) {
 
-				// populate the string word
+				
 				while (wordCompleted.get(counter) != null) {
 					counter++;
 				}
@@ -344,7 +322,7 @@ public class InvertedIndex implements Serializable {
 		 			 "e.data " + tr.data + "========boolena" + tr.isEnd +
 					 "=========e.counter " + tr.count);
 					 
-					 //fixing to get the corrcet word
+					 
 					if (tr.isEnd && k == (tr.count-1)) {
 						wordCompleted.put(counter, "done");
 					}
@@ -354,17 +332,16 @@ public class InvertedIndex implements Serializable {
 					k++;
 				}
 
-				// iterating the child of each char
+				
 				for (Tries t : tr.childNode) {
 					nextChildBuffer.add(t);
 				}
 			}
 
-			// resetting the counter
+			
 			counter = 0;
 
-			// System.out.println("Children found =============" +
-			// nextChildBuffer.size());
+			
 			currentChildBuffer = new java.util.ArrayList<Tries>();
 			if (nextChildBuffer.size() > 0) {
 				currentChildBuffer = nextChildBuffer;
@@ -372,7 +349,7 @@ public class InvertedIndex implements Serializable {
 			}
 		}
 
-		// output buffer
+		
 		for (String str : predictedWords) {
 			System.out.println("Predicted Words =" + str);
 		}
@@ -391,9 +368,7 @@ public class InvertedIndex implements Serializable {
 		return suggestedWordList;
 	}
 
-	// *****************************************
-	// Main function to run the implementation
-	// *****************************************
+	
 	public static void main(String[] arr) {
 		InvertedIndex t = new InvertedIndex();
 	}

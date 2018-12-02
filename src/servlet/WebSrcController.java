@@ -16,9 +16,7 @@ import WebCrawler.WebCrawlerManager;
 import WebCrawler.WebCrawlerNode;
 import resources.InvertedIndex;
 
-/**
- * Servlet implementation class FirstEntry
- */
+
 @WebServlet("/WebSrcController")
 public class WebSrcController extends HttpServlet {
 	
@@ -26,21 +24,16 @@ public class WebSrcController extends HttpServlet {
 	
 	private static final String CRAWLER_NODES_FILE = "luis";
 	
-	// Inverted Index for Web Search
+	
 	InvertedIndex invertedIndexObj;
 
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
+	
 	public WebSrcController() {
 		super();
 	}
 
 	
-    /**
-     *  simply creates or loads some data that will be used throughout the life of the servlet
-     * 
-     */
+   
     public void init() throws ServletException {
     	
 		Collection<WebCrawlerNode> savedNode = null;
@@ -63,13 +56,7 @@ public class WebSrcController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		response.setContentType("text/html");
-		
-		// TO check if InvertedIndex was instantiated 
-//		if (invertedIndexObj != null) {
-//			System.out.println("### DEBUG => Inverted Index loaded and instantianted");
-//		} else {
-//			System.out.println("### DEBUG => Inverted Index IS NULL");
-//		}
+
 
 		if (request.getParameter("act") != null) {
 			String actValue = request.getParameter("act");
@@ -79,12 +66,12 @@ public class WebSrcController extends HttpServlet {
 					String prefixValue = request.getParameter("prefix");
 					System.out.println("### DEBUG Prefix = " + prefixValue.length());
 					if (prefixValue.length() != 0) {
-						//org.json.JSONArray obj = new JSONArray();
+						
 						StringBuffer buffer = new StringBuffer();
 						buffer.append("[");
 						if (invertedIndexObj.predictWord(prefixValue) != null) {
 							for (String s : invertedIndexObj.predictWord(prefixValue)) {
-								//obj.put(s);
+								
 								buffer.append("\"" + s + "\",");
 							}
 							System.out.println("Returnung " + invertedIndexObj.predictWord(prefixValue));
@@ -102,14 +89,14 @@ public class WebSrcController extends HttpServlet {
 					if (prefixValue.length() != 0) {
 						ArrayList<String> e = new ArrayList<String>();
 						JSONArray obj = new JSONArray();
-						//StringBuffer buffer = new StringBuffer();
+						
 						if (invertedIndexObj.getMostRelevantUrls(prefixValue) != null) {
 							int i = 0;
 							for (String s : invertedIndexObj.getMostRelevantUrls(prefixValue)) {
 								if (s != null) {
 									System.out.println("### DEBUG => getTopUrl = " + i + " => " + s);
 									i++;
-									//buffer.append(s);
+									
 									obj.put(s);
 								}
 							}
