@@ -31,7 +31,7 @@ public class SearchController extends HttpServlet {
     	
 		Collection<WebCrawlerNode> savedNode = null;
 		try {
-			savedNode = (Collection<WebCrawlerNode>)WebCrawlerManager.loadSerializedObject(getServletContext().getRealPath("/WEB-INF/LinkedList-luis.ser"), "LinkedList");
+			savedNode = (Collection<WebCrawlerNode>)WebCrawlerManager.loadSerializedObject(getServletContext().getRealPath("/WEB-INF/LinkedList-Raywanderlich2000URLs.ser"), "LinkedList");
 			invertedIndexObj = new InvertedIndex();
 			invertedIndexObj.dataUpdated(savedNode);
 		} catch (ClassNotFoundException | IOException e) {
