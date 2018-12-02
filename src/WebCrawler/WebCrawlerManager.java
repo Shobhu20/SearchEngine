@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import resources.InvertedIndex;
-import utilities.Util;
 
 public class WebCrawlerManager {
 	
@@ -29,7 +28,6 @@ public class WebCrawlerManager {
 		out.close();
 		fileOut.close();
 		saved = true;
-		Util.printDebug(true, "Serialization Done at: " + fileOut.toString());
 		return saved;
 	}
    
@@ -66,7 +64,6 @@ public class WebCrawlerManager {
 		out.close();
 		fileOut.close();
 		saved = true;
-		Util.printDebug(true, "Serialization Done at: " + fileOut.toString());
 		return saved;
 	}
 	

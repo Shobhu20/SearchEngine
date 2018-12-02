@@ -1,24 +1,5 @@
 package resources;
 
-/**
- * This class is used to store the data dictionary , search the word, get suggestion(auto completion)
- * ranking of URLs and find the correct word in trie and inverted index
- * 
- * Functions Used are:
- * 1. 	updateWordOccurrence(int num, String url) --- update the occurence of a word in a url in inverted index
- * 2.	insertWord(String word, String url)       --- insert a new word in Trie and update its occurence in inverted index
- * 3.	getAllInvertedIndexList					  --- Print the link of all urls and its occurence in inverted index
- * 4.	search(String word)						  --- Search a word in Trie
- * 5.	remove(String word, String url)			  --- Remove a word in Trie
- * 6.	findEditDistance(String s1, String s2)	  --- Find the distance(Edit,Delete/Insert) between two words
- * 7.	loadData(Collection e, String url)		  --- Load the data into dictonary
- * 8.	getTopUrls(String word)					  --- Get the top URL having most occurenence of the input word
- * 9.	guessWord(String prefix)				  --- Get the list of all words in the dictonary starting from the input prefix
- * 10.	findCorrection(String word)				  --- Find the most correct word which is one distance away from the input word
- * 
- * @author yadwindersingh
- */
-
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -63,19 +44,6 @@ class Tries implements Serializable  {
 	}
 }
 
-/**
- * This class has the function to implement the inverted index using Trie and
- * perform below functions:
- *  1. Creating Dictonary 
- *  2. Searching Dictonary 
- *  3. Deletion 
- *  4. Prediction of words 
- *  5. Finding the correct word 
- *  6. Ranking of the URLs
- * 
- * @author yadwindersingh
- *
- */
 public class InvertedIndex implements Serializable {
 
 	private static final boolean String = false;

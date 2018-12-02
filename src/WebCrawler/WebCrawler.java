@@ -18,7 +18,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import utilities.Util;
 
 
 
@@ -120,12 +119,9 @@ public class WebCrawler {
 					    	linksToVisit.add(hrefURL);
 					    	linksToVisitCheckSet.add(hrefURL);
 					    	QtyQueuedLinks++;
-					    	Util.printDebug(isPrintDebug, "####### ADDED link to visit: " + hrefURL + "  Link index: " + QtyQueuedLinks);
 		    			} else {
-		    				Util.printDebug(isPrintDebug, "####### NOT ADDED link to visit, already QUEUED: " + hrefURL);
 		    			}
 		    		} else {
-		    			Util.printDebug(isPrintDebug, "####### NOT ADDED link to visit, not valid: " + hrefURL);
 		    		}
 		    	}
 		    }
@@ -144,15 +140,10 @@ public class WebCrawler {
 	    	do {
 	    		linkToVisit = linksToVisit.removeFirst();
 	    		if (visitedLinks.contains(linkToVisit)) {
-	    			Util.printDebug(isPrintDebug, "###### Already visited : " + linkToVisit);
 	    		}
 	    	} while (!linksToVisit.isEmpty() && visitedLinks.contains(linkToVisit));
 	    	
-	    	Util.printDebug(isPrintDebug, "Removing link from set: " + linkToVisit);
-	    	Util.printDebug(isPrintDebug, "Number of links still to visit: " + linksToVisit.size());
-	    	Util.printDebug(isPrintDebug, "Not visited yet : " + linkToVisit + " Will add to the visited list");
 			visitedLinks.add(linkToVisit);
-			Util.printDebug(isPrintDebug, ">>>>>>>>> Visiting recursevelly now: " + linkToVisit);
 			buildWebCrawl(linkToVisit);
 	    }
     }

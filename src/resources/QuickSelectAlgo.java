@@ -1,10 +1,4 @@
 package resources;
-/**
- * This class is used to get the kth largest elements from the list of array
- * 
- * @author yadwindersingh
- *
- */
 public class QuickSelectAlgo {
 	 public int findKthLargest(int[] nums, int k) {
 	        int start = 0, end = nums.length - 1, index = nums.length - k;
