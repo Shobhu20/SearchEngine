@@ -1,98 +1,77 @@
 package servlet;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 
+import java.util.Collection;
+import WebCrawler.WebCrawlerManager;
+import WebCrawler.WebCrawlerNode;
+import implementations.InvertedIndex;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 import org.json.JSONArray;
 
-import WebCrawler.WebCrawlerManager;
-import WebCrawler.WebCrawlerNode;
-import implementations.InvertedIndex;
+
 
 
 @WebServlet("/searchController")
 public class SearchController extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;	
-	private InvertedIndex invertedIndexObj;
+	private InvertedIndex searchEngOperation = new InvertedIndex();
 
     public void init() throws ServletException {
     	
 		Collection<WebCrawlerNode> savedNode = null;
 		try {
 			savedNode = (Collection<WebCrawlerNode>)WebCrawlerManager.loadSerializedObject(getServletContext().getRealPath("/WEB-INF/LinkedList-Raywanderlich2000URLs.ser"), "LinkedList");
-			invertedIndexObj = new InvertedIndex();
-			invertedIndexObj.dataUpdated(savedNode);
+			searchEngOperation.dataUpdated(savedNode);
 		} catch (ClassNotFoundException | IOException e) {
-			System.out.println(e);
 		}
     }	
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		JSONArray jsonArrayResul = new JSONArray();
 		response.setContentType("text/html");
-
-
+		String stringValue = request.getParameter("searchStr");
 		if (request.getParameter("action") != null) {
-			String actValue = request.getParameter("action");
-			if (actValue.equals("prefix")) {
-				if (request.getParameter("prefix") != null) {
-					String prefixValue = request.getParameter("prefix");
-					if (prefixValue.length() != 0) {
+			String requestAction = request.getParameter("action");
+			if (requestAction.equals("autocomplete") && stringValue != null && stringValue.length() != 0) {
 						StringBuffer buffer = new StringBuffer();
 						buffer.append("[");
-						if (invertedIndexObj.predictWord(prefixValue) != null) {
-							for (String s : invertedIndexObj.predictWord(prefixValue)) {
+						if (searchEngOperation.predictWord(stringValue) != null) {
+							for (String s : searchEngOperation.predictWord(stringValue)) {
 								buffer.append("\"" + s + "\",");
 							}
-							System.out.println("Return value is " + invertedIndexObj.predictWord(prefixValue));
+							System.out.println("Return value is " + searchEngOperation.predictWord(stringValue));
 							buffer.append("\" \"]");
 						}
 						response.getWriter().print(buffer.toString());
-					}
+			} else if (requestAction.equals("getTopUrl")) {
+				if (stringValue != null && stringValue.length() != 0) {
+						if (searchEngOperation.getMostRelevantUrls(stringValue) != null) {
+							for (String s : searchEngOperation.getMostRelevantUrls(stringValue)) {
+								if (s != null){jsonArrayResul.put(s);}}}
+						response.getWriter().print(jsonArrayResul);
 				}
-			} else if (actValue.equals("getTopUrl")) {
-				String prefixValue = request.getParameter("prefix");
-				if (prefixValue != null) {
-					if (prefixValue.length() != 0) {
-						ArrayList<String> e = new ArrayList<String>();
-						JSONArray obj = new JSONArray();
-						if (invertedIndexObj.getMostRelevantUrls(prefixValue) != null) {
-							int i = 0;
-							for (String s : invertedIndexObj.getMostRelevantUrls(prefixValue)) {
-								if (s != null) {
-									i++;
-									obj.put(s);
-								}
-							}
-						}
-						response.getWriter().print(obj);
-					}
-				}
-			} else if (actValue.equals("getWordSuggestion")) {
-				String prefixValue = request.getParameter("prefix");
-				if (prefixValue != null && !prefixValue.equals("")) {
-						JSONArray jsonArrayOfSuggestedWords = new JSONArray();
-						ArrayList<String> suggestedWordList = invertedIndexObj.findSuggestedWord(prefixValue);
+			} else if (requestAction.equals("getWordSuggestion") && stringValue != null && !stringValue.equals("")) {
+						ArrayList<String> suggestedWordList = searchEngOperation.findSuggestedWord(stringValue);
 						if (suggestedWordList != null && suggestedWordList.size() !=0 ) {
 							for (String suggestedWord : suggestedWordList) {
 								if (suggestedWord != null && !suggestedWord.equals("")) {
-									jsonArrayOfSuggestedWords.put(suggestedWord);
+									jsonArrayResul.put(suggestedWord);
 								}
 							}
 						}
-						response.getWriter().print(jsonArrayOfSuggestedWords);
+						response.getWriter().print(jsonArrayResul);
 				}
-			}
 		}
 		response.getWriter().print("");
 	}
-
 }

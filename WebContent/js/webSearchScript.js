@@ -1,8 +1,4 @@
-var i = 0;
-var prefixCollection = [ "ActionScript", "AppleScript", "Asp", "BASIC", "C",
-		"C++", "Clojure", "COBOL", "ColdFusion", "Erlang", "Fortran", "Groovy",
-		"Haskell", "Java", "JavaScript", "Lisp", "Perl", "PHP", "Python",
-		"Ruby", "Scala", "Scheme" ];
+var prefixCollection = [ "jalaj", "cash meet singh", "shobhu25", "pokemon"];
 $(document).ready(function() {
 	$("input").keyup(function() {
 		getSuggestion();
@@ -16,18 +12,13 @@ function getSuggestion() {
 	xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
-
-			console.log($.parseJSON(xhttp.responseText));
 			prefixCollection = $.parseJSON(xhttp.responseText);
-			$('#usr').autocomplete({
+			$('#inputValue').autocomplete({
 				source : prefixCollection
-			});
-		}
-	};
-	var str = $('#usr').val();
-	xhttp.open("GET", "searchController?action=prefix&prefix=" + str, true);
+			});}};
+	var str = $('#inputValue').val();
+	xhttp.open("GET", "searchController?action=autocomplete&searchStr=" + str, true);
 	xhttp.send();
-
 }
 
 function getTopUrls() {
@@ -59,8 +50,8 @@ function getTopUrls() {
 			}
 		}
 	};
-	var str = $('#usr').val();
-	xhttp.open("GET", "searchController?action=getTopUrl&prefix=" + str, true);
+	var str = $('#inputValue').val();
+	xhttp.open("GET", "searchController?action=getTopUrl&searchStr=" + str, true);
 	xhttp.send();
 
 }
@@ -97,8 +88,8 @@ function getrecommendedWord() {
 			}
 		}
 	};
-	var str = $('#usr').val();
-	xhttp.open("GET", "searchController?action=getWordSuggestion&prefix=" + str, true);
+	var str = $('#inputValue').val();
+	xhttp.open("GET", "searchController?action=getWordSuggestion&searchStr=" + str, true);
 	xhttp.send();
 
 }
