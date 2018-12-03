@@ -14,83 +14,177 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 
+
+class Tries implements Serializable  {
+	char data;
+	int count;
+	boolean isEnd;
+	int wordNumber;
+	LinkedList<Tries> childNode;
+
+	
+	public Tries(char n) {
+		data = n;
+		count = 0;
+		isEnd = false;
+		wordNumber = -1;
+		childNode = new LinkedList<Tries>();
+	}
+
+	
+	public Tries getChild(char c) {
+		if (childNode != null) {
+			for (Tries child : childNode) {
+				if (child.data == c) {
+					return child;
+				}
+			}
+		}
+		return null;
+	}
+}
+
 public class InvertedIndex implements Serializable {
 
-	private static final int FOUND_STRING_RETURN_INT_VALUE = 1;
-	private static final int NOT_FOUND_RETURN_INT = -1;
-	public static Integer wordCountNumber;
-	public static Trie startNode;
-	public static HashMap<Integer, HashMap<String, Integer>> arrayTableMapping;
-	static int count = 0;
+	private static final boolean String = false;
+	public static int currWordNumber;
+	public static Tries root;
+	public static HashMap<Integer, HashMap<String, Integer>> invertedIdxArray;
 
 	public InvertedIndex() {
-		arrayTableMapping = new HashMap<Integer, HashMap<java.lang.String, Integer>>();
-		wordCountNumber = 1;
-		startNode = new Trie(' ');
+		root = new Tries(' ');
+		invertedIdxArray = new HashMap<Integer, HashMap<java.lang.String, Integer>>();
+		currWordNumber = 1;
 	}
 
-	public void getAllInvertedIndexList() {
-		for (Map.Entry<Integer, HashMap<String, Integer>> entry : arrayTableMapping.entrySet()) {
-			System.out.println(entry);
+	
+	public void updateWordOccurrence(int num, String url) {
+
+	
+		if (invertedIdxArray.get(num) != null) {
+
+			
+			if (invertedIdxArray.get(num).get(url) != null) {
+
+				
+				invertedIdxArray.get(num).put(url, invertedIdxArray.get(num).get(url) + 1);
+			} else {
+
+				
+				invertedIdxArray.get(num).put(url, 1);
+			}
+		} else {
+
+			
+			HashMap<String, Integer> urlMap = new HashMap<java.lang.String, Integer>();
+			urlMap.put(url, 1);
+			invertedIdxArray.put(num, urlMap);
 		}
 	}
+
+	public void insertWord(String word, String url) {
+
+		
+		int wordNum = search(word);
+		
+		if (wordNum != -1) {
+			
+			updateWordOccurrence(wordNum, url);
+			return;
+		}
+
+		
+		Tries curr = root;
+		for (char c : word.toCharArray()) {
+			Tries child = curr.getChild(c);
+			if (child != null) {
+				curr = child;
+			} else {
+				curr.childNode.add(new Tries(c));
+				curr = curr.getChild(c);
+			}
+			curr.count++;
+		}
+
+		
+		curr.isEnd = true;
+		curr.wordNumber = currWordNumber;
+		updateWordOccurrence(curr.wordNumber, url);
+		
+		currWordNumber++;
+	}
+
+	
+	public void getAllInvertedIndexList() {
+
+		System.out.println("Printing InvertedIndex List");
+		for (Map.Entry<Integer, HashMap<String, Integer>> e : invertedIdxArray.entrySet()) {
+			System.out.println(e);
+		}
+	}
+
 	
 	public int search(String word) {
-		Trie curr = startNode;
-		for (int i = 0; i < word.length(); i++) {
-			char c= word.charAt(i);
+		Tries curr = root;
+		for (char c : word.toCharArray()) {
 			if (curr.getChild(c) == null) {
-				return NOT_FOUND_RETURN_INT;
+				return -1;
 			} else {
 				curr = curr.getChild(c);
 			}
 		}
-		if (curr.isLast) {
-			return curr.position;
+		if (curr.isEnd) {
+			return curr.wordNumber;
 		}
-		return NOT_FOUND_RETURN_INT;
+
+		return -1;
 	}
 
-	public void deleteFromTrie(String str, String websiteLink) {
-		int wordNum = search(str);
-		if (wordNum == NOT_FOUND_RETURN_INT) {
-			System.out.println("the given string is not existing in the trie so cannot delete");
+
+	public void remove(String word, String url) {
+
+		// check if the word is present
+		int wordNum = search(word);
+		if (wordNum == -1) {
+			System.out.println("word not found");
 			return;
 		}
-		arrayTableMapping.get(wordNum).remove(websiteLink);
-		Trie trie = startNode;
-		for (int i = 0 ; i < str.length(); i++) {
-			char c = str.charAt(i);
-			Trie child = trie.getChild(c);
-			if (child.count == FOUND_STRING_RETURN_INT_VALUE) {
-				trie.childNode.remove();
+
+		
+		invertedIdxArray.get(wordNum).remove(url);
+
+		
+		Tries curr = root;
+		for (char c : word.toCharArray()) {
+			Tries child = curr.getChild(c);
+			if (child.count == 1) {
+				curr.childNode.remove();
 				return;
 			} else {
 				child.count--;
-				trie = child;
+				curr = child;
 			}
 		}
-		trie.isLast = false;
+		curr.isEnd = false;
 	}
 	
-	public int findEditDistance(String String1, String String2) {
-		Integer str1Length = String1.length();
-		Integer str2Length = String2.length();
-		Integer editDistanceMatrix[][] = new Integer[str1Length + 1][str2Length + 1];
-		
-		for (int i = 0; i <= Math.max(str1Length, str2Length); i++) {
-			if(!(i > str1Length))
-				editDistanceMatrix[i][0] = i;
-			if(!(i > str2Length))
-				editDistanceMatrix[0][i] = i;
+	public int findEditDistance(String s1, String s2) {
+		int str1Length = s1.length();
+		int str2Length = s2.length();
+		int editDistanceMatrix[][] = new int[str1Length + 1][str2Length + 1];
+		for (int i = 0; i <= str1Length; i++) {
+			editDistanceMatrix[i][0] = i;
 		}
-		
+		for (int i = 0; i <= str2Length; i++) {
+			editDistanceMatrix[0][i] = i;
+		}
 		for (int i = 1; i < str1Length; i++) {
 			for (int j = 1; j < str2Length; j++) {
-				if (String1.charAt(i) == String2.charAt(j)) {
+				if (s1.charAt(i) == s2.charAt(j)) {
 					editDistanceMatrix[i][j] = editDistanceMatrix[i - 1][j - 1];
 				} else {
-					editDistanceMatrix[i][j] = Math.min(Math.min( (editDistanceMatrix[i][j - 1]) + 1, (editDistanceMatrix[i - 1][j]) + 1),(editDistanceMatrix[i-1][j-1]) + 1);
+					editDistanceMatrix[i][j] = Math.min(Math.min((editDistanceMatrix[i - 1][j]) + 1, (editDistanceMatrix[i][j - 1]) + 1),
+							(editDistanceMatrix[i - 1][j - 1]) + 1);
 				}
 			}
 		}
@@ -98,132 +192,51 @@ public class InvertedIndex implements Serializable {
 		return editDistance;
 	}
 
-	public void loadData(Collection collection, String url) {
-		Iterator<String> itr = collection.iterator();
+	
+	public void loadData(Collection e, String url) {
+
+		
+		Iterator<String> itr = e.iterator();
 		while (itr.hasNext()) {
-//			count++;
-			addNewString(itr.next(), url);
+			insertWord(itr.next(), url);
 		}
-//		System.out.println("Number of words: " + count);
 	}
 
+
 	public void dataUpdated(Collection<Node> e) {
+
+			
 			Iterator<Node> itr = e.iterator();
-			Node webCrawledNodes;
+			Node webCrawledNodes= null;
 			while (itr.hasNext()) {
+				
 				webCrawledNodes = itr.next();
+				
 				Collection<String> eachWord = webCrawledNodes.getTokens();
 				Iterator<String> itr1 = eachWord.iterator();
 				while(itr1.hasNext()){
-//					count++;
+					
 					String input= itr1.next();
-					addNewString(input,webCrawledNodes.getBaseURL());
+					
+					insertWord(input,webCrawledNodes.getBaseURL());
 				}
 			}
-	}
-
-
-	public ArrayList<String> findSuggestedWord(String searchWord) {
-		String wordsStartingWithSameLetterList[] = predictWord(searchWord.substring(0, 1));
-		ArrayList<String> suggestedWordList = new ArrayList<String>();
-		for (String wordsStartingWithSameLetter : wordsStartingWithSameLetterList) {
-			if (findEditDistance(searchWord, wordsStartingWithSameLetter) == 1) {
-				suggestedWordList.add(wordsStartingWithSameLetter);
-			}
-		}
-		return suggestedWordList;
-	}
-	
-	public String[] predictWord(String prefix) {
-		Trie current = startNode;
-		int lengthOfWord = 0;
-		String predictedWords[] = null;
-		int i=0;
-		while(i<prefix.length()){
-			if (current.getChild(prefix.charAt(i)) == null) {
-				return null;
-			} else if (i == (prefix.length() - 1)) {
-				current = current.getChild(prefix.charAt(i));
-				lengthOfWord = current.count;
-			} else {
-				current = current.getChild(prefix.charAt(i));
-			}
-			i++;
-		}
-		predictedWords = new String[lengthOfWord];
-		int j=0;
-		while(j<predictedWords.length){
-			predictedWords[j] = prefix;
-			j++;
-		}
-		ArrayList<Trie> currentChildBuffer = new java.util.ArrayList<Trie>();
-		ArrayList<Trie> nextChildBuffer = new java.util.ArrayList<Trie>();
-		HashMap<Integer, String> wordCompleted = new HashMap<Integer, String>();
-		int counter = 0;
-		if (current.childNode != null) {
-			for (Trie e : current.childNode) {
-				currentChildBuffer.add(e);
-			}
 		}
 
-		
-		while (currentChildBuffer.size() != 0) {
-			for (Trie tr : currentChildBuffer) {
-				while (wordCompleted.get(counter) != null) {
-					counter++;
-				}
-				int k =0;
-				while(k<tr.count) {
-					if (tr.isLast && k == (tr.count-1)) {
-						wordCompleted.put(counter, "done");
-					}
-					 System.out.println("counter " + counter);
-					predictedWords[counter] = predictedWords[counter] + tr.strData;
-					counter++;
-					k++;
-				}
-				for (Trie t : tr.childNode) {
-					nextChildBuffer.add(t);
-				}
-			}
-			counter = 0;
-			
-			currentChildBuffer = new java.util.ArrayList<Trie>();
-			if (nextChildBuffer.size() > 0) {
-				currentChildBuffer = nextChildBuffer;
-				nextChildBuffer = new java.util.ArrayList<Trie>();
-			}
-		}
-		return predictedWords;
-	}
-
-
-	
-	
-	public void wordOccurenceUpdatr(int pos, String websiteLink) {
-		HashMap<String, Integer> arrayTableEntry;
-		if (arrayTableMapping.get(pos) != null) {
-			if (arrayTableMapping.get(pos).get(websiteLink) != null) arrayTableMapping.get(pos).put(websiteLink, arrayTableMapping.get(pos).get(websiteLink) + 1);
-			 else arrayTableMapping.get(pos).put(websiteLink, 1);
-		} else {
-			arrayTableEntry = new HashMap<>();
-			arrayTableEntry.put(websiteLink, 1);
-			arrayTableMapping.put(pos, arrayTableEntry);
-		}
-	}
-
-	
-	public static void main(String[] arr) {
-		InvertedIndex t = new InvertedIndex();
-	}
-	
 
 	public String[] getMostRelevantUrls(String word) {
 		int docNum = search(word);
-		if (docNum != NOT_FOUND_RETURN_INT) {
+		System.out.println("Word is present at " + docNum);
+		if (docNum != -1) {
+
+			
 			int topk = 5;
 			int i = 0;
-			HashMap<String, Integer> foundUrl = arrayTableMapping.get(docNum);
+
+		
+			HashMap<String, Integer> foundUrl = invertedIdxArray.get(docNum);
+
+		
 			final int[] frequency = new int[foundUrl.size()];
 			for (final int value : foundUrl.values()) {
 				frequency[i++] = value;
@@ -246,34 +259,118 @@ public class InvertedIndex implements Serializable {
 			}
 			return topKElements;
 		} else {
+			System.out.println("No word found");
 			return null;
 		}
 	}
-	
-	public void addNewString(String str, String websiteLink) {
-		int wordNum = search(str);
-		if (wordNum > NOT_FOUND_RETURN_INT) {
-			count++;
-			wordOccurenceUpdatr(wordNum, websiteLink);
-			return;
-		}
-		System.out.println("Number of words: " + count);
-		Trie existing = startNode;
-		for (int i = 0; i< str.length(); i++) {
-			char c=  str.charAt(i);
-			Trie child = existing.getChild(c);
-			if (child != null) {
-				existing = child;
-				existing.count++;
+
+	public String[] predictWord(String prefix) {
+		Tries current = root;
+		int lengthOfWord = 0;
+		String predictedWords[] = null;
+		
+		
+		int i=0;
+		while(i<prefix.length()){
+			if (current.getChild(prefix.charAt(i)) == null) {
+				System.out.println("No suggestion");
+				return null;
+			} else if (i == (prefix.length() - 1)) {
+				current = current.getChild(prefix.charAt(i));
+				System.out.println("Reading Character = "+ prefix.charAt(i));
+				System.out.println("Current value =" + current.data + "===Current count= " + current.count);
+				lengthOfWord = current.count;
 			} else {
-				existing.childNode.add(new Trie(c));
-				existing = existing.getChild(c);
-				existing.count++;
+				current = current.getChild(prefix.charAt(i));
+			}
+			i++;
+		}
+		System.out.println("Number of words to be returned =" + lengthOfWord);
+
+	
+		predictedWords = new String[lengthOfWord];
+		int j=0;
+		while(j<predictedWords.length){
+			predictedWords[j] = prefix;
+			j++;
+		}
+
+		
+		java.util.ArrayList<Tries> currentChildBuffer = new java.util.ArrayList<Tries>();
+		java.util.ArrayList<Tries> nextChildBuffer = new java.util.ArrayList<Tries>();
+		HashMap<Integer, String> wordCompleted = new HashMap<Integer, String>();
+
+		
+		int counter = 0;
+		if (current.childNode != null) {
+			for (Tries e : current.childNode) {
+				currentChildBuffer.add(e);
 			}
 		}
-		existing.isLast = true;
-		existing.position = wordCountNumber;
-		wordOccurenceUpdatr(existing.position, websiteLink);
-		wordCountNumber++;
+
+		
+		while (currentChildBuffer.size() != 0) {
+			for (Tries tr : currentChildBuffer) {
+
+				
+				while (wordCompleted.get(counter) != null) {
+					counter++;
+				}
+				int k =0;
+				while(k<tr.count) {
+					 System.out.println(
+		 			 "e.data " + tr.data + "========boolena" + tr.isEnd +
+					 "=========e.counter " + tr.count);
+					 
+					 
+					if (tr.isEnd && k == (tr.count-1)) {
+						wordCompleted.put(counter, "done");
+					}
+					 System.out.println("counter " + counter);
+					predictedWords[counter] = predictedWords[counter] + tr.data;
+					counter++;
+					k++;
+				}
+
+				
+				for (Tries t : tr.childNode) {
+					nextChildBuffer.add(t);
+				}
+			}
+
+			
+			counter = 0;
+
+			
+			currentChildBuffer = new java.util.ArrayList<Tries>();
+			if (nextChildBuffer.size() > 0) {
+				currentChildBuffer = nextChildBuffer;
+				nextChildBuffer = new java.util.ArrayList<Tries>();
+			}
+		}
+
+		
+		for (String str : predictedWords) {
+			System.out.println("Predicted Words =" + str);
+		}
+
+		return predictedWords;
 	}
+
+	public ArrayList<String> findSuggestedWord(String searchWord) {
+		String wordsStartingWithSameLetterList[] = predictWord(searchWord.substring(0, 1));
+		ArrayList<String> suggestedWordList = new ArrayList<String>();
+		for (String wordsStartingWithSameLetter : wordsStartingWithSameLetterList) {
+			if (findEditDistance(searchWord, wordsStartingWithSameLetter) == 1) {
+				suggestedWordList.add(wordsStartingWithSameLetter);
+			}
+		}
+		return suggestedWordList;
+	}
+
+	
+	public static void main(String[] arr) {
+		InvertedIndex t = new InvertedIndex();
+	}
+
 }
