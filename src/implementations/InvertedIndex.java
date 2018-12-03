@@ -45,7 +45,7 @@ public class InvertedIndex implements Serializable {
 			}
 		}
 		if (curr.isLast) {
-			return curr.NumberOfWord;
+			return curr.position;
 		}
 		return NOT_FOUND_RETURN_INT;
 	}
@@ -264,8 +264,8 @@ public class InvertedIndex implements Serializable {
 			}
 		}
 		existing.isLast = true;
-		existing.NumberOfWord = wordCountNumber;
-		wordOccurenceUpdatr(existing.NumberOfWord, websiteLink);
+		existing.position = wordCountNumber;
+		wordOccurenceUpdatr(existing.position, websiteLink);
 		wordCountNumber++;
 	}
 }

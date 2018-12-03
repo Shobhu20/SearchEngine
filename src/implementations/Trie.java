@@ -10,7 +10,7 @@ class Trie implements Serializable  {
 	char strData;
 	Integer count;
 	boolean isLast;
-	Integer NumberOfWord;
+	Integer position;
 	LinkedList<Trie> childNode;
 
 	public Trie getChild(char c) {
@@ -28,7 +28,7 @@ class Trie implements Serializable  {
 		strData = charForTrie;
 		count = 0;
 		isLast = false;
-		NumberOfWord = -1;
+		position = -1;
 		childNode = new LinkedList<Trie>();
 	}
 }
