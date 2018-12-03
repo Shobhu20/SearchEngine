@@ -16,9 +16,6 @@ import java.util.ArrayList;
 
 import org.json.JSONArray;
 
-
-
-
 @WebServlet("/searchController")
 public class SearchController extends HttpServlet {
 	
