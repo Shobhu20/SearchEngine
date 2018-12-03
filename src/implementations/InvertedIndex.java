@@ -3,7 +3,7 @@ package implementations;
 import java.util.LinkedList;
 import java.util.Map;
 
-import WebCrawler.WebCrawlerNode;
+import CrawlerPackage.Node;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -21,6 +21,7 @@ public class InvertedIndex implements Serializable {
 	public static Integer wordCountNumber;
 	public static Trie startNode;
 	public static HashMap<Integer, HashMap<String, Integer>> arrayTableMapping;
+	static int count = 0;
 
 	public InvertedIndex() {
 		arrayTableMapping = new HashMap<Integer, HashMap<java.lang.String, Integer>>();
@@ -100,21 +101,26 @@ public class InvertedIndex implements Serializable {
 	public void loadData(Collection collection, String url) {
 		Iterator<String> itr = collection.iterator();
 		while (itr.hasNext()) {
+//			count++;
 			addNewString(itr.next(), url);
 		}
+//		System.out.println("Number of words: " + count);
 	}
 
-	public void dataUpdated(Collection<WebCrawlerNode> e) {
-			Iterator<WebCrawlerNode> itr = e.iterator();
-			WebCrawlerNode webCrawledNodes;
+	public void dataUpdated(Collection<Node> e) {
+			Iterator<Node> itr = e.iterator();
+			Node webCrawledNodes;
 			while (itr.hasNext()) {
 				webCrawledNodes = itr.next();
-				Collection<String> eachWord = webCrawledNodes.getTextContentsTokens();
+				Collection<String> eachWord = webCrawledNodes.getTokens();
 				Iterator<String> itr1 = eachWord.iterator();
 				while(itr1.hasNext()){
+//					count++;
 					String input= itr1.next();
-					addNewString(input,webCrawledNodes.getNodeBaseUrl());
-				}}}
+					addNewString(input,webCrawledNodes.getBaseURL());
+				}
+			}
+	}
 
 
 	public ArrayList<String> findSuggestedWord(String searchWord) {
@@ -247,9 +253,11 @@ public class InvertedIndex implements Serializable {
 	public void addNewString(String str, String websiteLink) {
 		int wordNum = search(str);
 		if (wordNum > NOT_FOUND_RETURN_INT) {
+			count++;
 			wordOccurenceUpdatr(wordNum, websiteLink);
 			return;
 		}
+		System.out.println("Number of words: " + count);
 		Trie existing = startNode;
 		for (int i = 0; i< str.length(); i++) {
 			char c=  str.charAt(i);
