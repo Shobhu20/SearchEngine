@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import WebCrawler.WebCrawlerNode;
+import WebCrawler.Node;
 import constants.constants;
 
 import java.io.FileOutputStream;
@@ -62,14 +62,14 @@ public class InvertedIndex implements Serializable {
 		}
 	}
 	
-	public void dataUpdated(Collection<WebCrawlerNode> webCrawlerNodeCollection) {
-			Iterator<WebCrawlerNode> itr = webCrawlerNodeCollection.iterator();
-			WebCrawlerNode node;
+	public void dataUpdated(Collection<Node> webCrawlerNodeCollection) {
+			Iterator<Node> itr = webCrawlerNodeCollection.iterator();
+			Node node;
 			while (itr.hasNext()) {
 				node = itr.next();
-				ArrayList<String> eachWord = (ArrayList<String>) node.getTextContentsTokens();
+				ArrayList<String> eachWord = (ArrayList<String>) node.getTokens();
 				for(String word : eachWord) {
-					addNewString(word, node.getNodeBaseUrl());
+					addNewString(word, node.getBaseURL());
 				}}}
 
 	public ArrayList<String> findSuggestedWord(String searchWord) {

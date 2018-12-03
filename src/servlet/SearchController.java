@@ -2,8 +2,8 @@ package servlet;
 
 
 import java.util.Collection;
-import WebCrawler.WebCrawlerManager;
-import WebCrawler.WebCrawlerNode;
+import WebCrawler.Manager;
+import WebCrawler.Node;
 import implementations.InvertedIndex;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,9 +24,9 @@ public class SearchController extends HttpServlet {
 
     public void init() throws ServletException {
     	
-		Collection<WebCrawlerNode> savedNode = null;
+		Collection<Node> savedNode = null;
 		try {
-			savedNode = (Collection<WebCrawlerNode>)WebCrawlerManager.loadSerializedObject(getServletContext().getRealPath("/WEB-INF/LinkedList-Raywanderlich2000URLs.ser"), "LinkedList");
+			savedNode = (Collection<Node>)Manager.loadObject(getServletContext().getRealPath("/WEB-INF/LinkedList-Raywanderlich2000URLs.ser"), "LinkedList");
 			searchEngOperation.dataUpdated(savedNode);
 		} catch (ClassNotFoundException | IOException e) {
 		}
