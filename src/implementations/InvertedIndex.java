@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import WebCrawler.WebCrawlerNode;
+import constants.constants;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -16,96 +17,52 @@ import java.util.Iterator;
 
 public class InvertedIndex implements Serializable {
 
-	private static final int FOUND_STRING_RETURN_INT_VALUE = 1;
-	private static final int NOT_FOUND_RETURN_INT = -1;
+
 	public static Integer wordCountNumber;
 	public static Trie startNode;
 	public static HashMap<Integer, HashMap<String, Integer>> arrayTableMapping;
 
 	public InvertedIndex() {
-		arrayTableMapping = new HashMap<Integer, HashMap<java.lang.String, Integer>>();
+		arrayTableMapping = new HashMap<>();
 		wordCountNumber = 1;
-		startNode = new Trie(' ');
-	}
-
-	public void getAllInvertedIndexList() {
-		for (Map.Entry<Integer, HashMap<String, Integer>> entry : arrayTableMapping.entrySet()) {
-			System.out.println(entry);
-		}
+		startNode = new Trie(constants.EMPTY_CHARACTER);
 	}
 	
-	public int search(String word) {
-		Trie curr = startNode;
+	public int findWord(String word) {
+		Trie trie = startNode;
 		for (int i = 0; i < word.length(); i++) {
 			char c= word.charAt(i);
-			if (curr.getChild(c) == null) {
-				return NOT_FOUND_RETURN_INT;
-			} else {
-				curr = curr.getChild(c);
-			}
+			Trie temp = trie.getImmediateChild(c);
+			if (temp == null) {
+				return constants.NOT_FOUND_RETURN_INT;
+			} 
+			trie = temp;
 		}
-		if (curr.isLast) {
-			return curr.position;
-		}
-		return NOT_FOUND_RETURN_INT;
+		int returnVal = (trie.isLeafNode == true) ? trie.position : constants.NOT_FOUND_RETURN_INT;
+		return returnVal;
 	}
 
 	public void deleteFromTrie(String str, String websiteLink) {
-		int wordNum = search(str);
-		if (wordNum == NOT_FOUND_RETURN_INT) {
-			System.out.println("the given string is not existing in the trie so cannot delete");
-			return;
-		}
+		int wordNum = findWord(str);
+		if (wordNum != constants.NOT_FOUND_RETURN_INT) {
 		arrayTableMapping.get(wordNum).remove(websiteLink);
 		Trie trie = startNode;
 		for (int i = 0 ; i < str.length(); i++) {
 			char c = str.charAt(i);
-			Trie child = trie.getChild(c);
-			if (child.count == FOUND_STRING_RETURN_INT_VALUE) {
+			Trie child = trie.getImmediateChild(c);
+			if (child.count == constants.FOUND_STRING_RETURN_INT_VALUE) {
 				trie.childNode.remove();
-				return;
+				break;
 			} else {
 				child.count--;
 				trie = child;
 			}
 		}
-		trie.isLast = false;
+		}
 	}
 	
-	public int findEditDistance(String String1, String String2) {
-		Integer str1Length = String1.length();
-		Integer str2Length = String2.length();
-		Integer editDistanceMatrix[][] = new Integer[str1Length + 1][str2Length + 1];
-		
-		for (int i = 0; i <= Math.max(str1Length, str2Length); i++) {
-			if(!(i > str1Length))
-				editDistanceMatrix[i][0] = i;
-			if(!(i > str2Length))
-				editDistanceMatrix[0][i] = i;
-		}
-		
-		for (int i = 1; i < str1Length; i++) {
-			for (int j = 1; j < str2Length; j++) {
-				if (String1.charAt(i) == String2.charAt(j)) {
-					editDistanceMatrix[i][j] = editDistanceMatrix[i - 1][j - 1];
-				} else {
-					editDistanceMatrix[i][j] = Math.min(Math.min( (editDistanceMatrix[i][j - 1]) + 1, (editDistanceMatrix[i - 1][j]) + 1),(editDistanceMatrix[i-1][j-1]) + 1);
-				}
-			}
-		}
-		int editDistance = editDistanceMatrix[str1Length - 1][str2Length - 1];
-		return editDistance;
-	}
-
-	public void loadData(Collection collection, String url) {
-		Iterator<String> itr = collection.iterator();
-		while (itr.hasNext()) {
-			addNewString(itr.next(), url);
-		}
-	}
-
-	public void dataUpdated(Collection<WebCrawlerNode> e) {
-			Iterator<WebCrawlerNode> itr = e.iterator();
+	public void dataUpdated(Collection<WebCrawlerNode> webCrawlerNodeCollection) {
+			Iterator<WebCrawlerNode> itr = webCrawlerNodeCollection.iterator();
 			WebCrawlerNode webCrawledNodes;
 			while (itr.hasNext()) {
 				webCrawledNodes = itr.next();
@@ -121,7 +78,7 @@ public class InvertedIndex implements Serializable {
 		String wordsStartingWithSameLetterList[] = predictWord(searchWord.substring(0, 1));
 		ArrayList<String> suggestedWordList = new ArrayList<String>();
 		for (String wordsStartingWithSameLetter : wordsStartingWithSameLetterList) {
-			if (findEditDistance(searchWord, wordsStartingWithSameLetter) == 1) {
+			if (EditDistanceAlgo.findEditDistance(searchWord, wordsStartingWithSameLetter) == 1) {
 				suggestedWordList.add(wordsStartingWithSameLetter);
 			}
 		}
@@ -134,13 +91,13 @@ public class InvertedIndex implements Serializable {
 		String predictedWords[] = null;
 		int i=0;
 		while(i<prefix.length()){
-			if (current.getChild(prefix.charAt(i)) == null) {
+			if (current.getImmediateChild(prefix.charAt(i)) == null) {
 				return null;
 			} else if (i == (prefix.length() - 1)) {
-				current = current.getChild(prefix.charAt(i));
+				current = current.getImmediateChild(prefix.charAt(i));
 				lengthOfWord = current.count;
 			} else {
-				current = current.getChild(prefix.charAt(i));
+				current = current.getImmediateChild(prefix.charAt(i));
 			}
 			i++;
 		}
@@ -168,7 +125,7 @@ public class InvertedIndex implements Serializable {
 				}
 				int k =0;
 				while(k<tr.count) {
-					if (tr.isLast && k == (tr.count-1)) {
+					if (tr.isLeafNode && k == (tr.count-1)) {
 						wordCompleted.put(counter, "done");
 					}
 					 System.out.println("counter " + counter);
@@ -213,8 +170,8 @@ public class InvertedIndex implements Serializable {
 	
 
 	public String[] getMostRelevantUrls(String word) {
-		int docNum = search(word);
-		if (docNum != NOT_FOUND_RETURN_INT) {
+		int docNum = findWord(word);
+		if (docNum != constants.NOT_FOUND_RETURN_INT) {
 			int topk = 5;
 			int i = 0;
 			HashMap<String, Integer> foundUrl = arrayTableMapping.get(docNum);
@@ -245,25 +202,25 @@ public class InvertedIndex implements Serializable {
 	}
 	
 	public void addNewString(String str, String websiteLink) {
-		int wordNum = search(str);
-		if (wordNum > NOT_FOUND_RETURN_INT) {
+		int wordNum = findWord(str);
+		if (wordNum > constants.NOT_FOUND_RETURN_INT) {
 			wordOccurenceUpdatr(wordNum, websiteLink);
 			return;
 		}
 		Trie existing = startNode;
 		for (int i = 0; i< str.length(); i++) {
 			char c=  str.charAt(i);
-			Trie child = existing.getChild(c);
+			Trie child = existing.getImmediateChild(c);
 			if (child != null) {
 				existing = child;
 				existing.count++;
 			} else {
 				existing.childNode.add(new Trie(c));
-				existing = existing.getChild(c);
+				existing = existing.getImmediateChild(c);
 				existing.count++;
 			}
 		}
-		existing.isLast = true;
+		existing.isLeafNode = true;
 		existing.position = wordCountNumber;
 		wordOccurenceUpdatr(existing.position, websiteLink);
 		wordCountNumber++;

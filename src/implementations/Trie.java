@@ -9,11 +9,11 @@ class Trie implements Serializable  {
 	private static final long serialVersionUID = 1L;
 	char strData;
 	Integer count;
-	boolean isLast;
+	boolean isLeafNode;
 	Integer position;
 	LinkedList<Trie> childNode;
 
-	public Trie getChild(char c) {
+	public Trie getImmediateChild(char c) {
 		if (childNode != null) {
 			Iterator<Trie> itr = childNode.iterator();
 			while(itr.hasNext()) {
@@ -27,7 +27,7 @@ class Trie implements Serializable  {
 	public Trie(char charForTrie) {
 		strData = charForTrie;
 		count = 0;
-		isLast = false;
+		isLeafNode = false;
 		position = -1;
 		childNode = new LinkedList<Trie>();
 	}
